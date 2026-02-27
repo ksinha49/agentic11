@@ -1,0 +1,33 @@
+{
+  "description": "Default 26-step processing pipeline seed data for DynamoDB",
+  "table": "bluestar-processing-pipeline",
+  "steps": [
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0100", "stepOrder": 100, "subroutineName": "FILE_INGEST", "agent": "IDP", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0200", "stepOrder": 200, "subroutineName": "FILE_VALIDATION", "agent": "VALIDATOR", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0300", "stepOrder": 300, "subroutineName": "MERGE_PAYROLL_FIELDS", "agent": "IDP", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0400", "stepOrder": 400, "subroutineName": "DROP_V_VARIABLES", "agent": "IDP", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0500", "stepOrder": 500, "subroutineName": "DESTRING_NUMBERS", "agent": "IDP", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0550", "stepOrder": 550, "subroutineName": "SPLIT_MONTH_PEO", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0600", "stepOrder": 600, "subroutineName": "CALC_COMPENSATION", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0700", "stepOrder": 700, "subroutineName": "CALC_MATCH", "agent": "TRANSFORMATION", "enabled": false, "required": false},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0800", "stepOrder": 800, "subroutineName": "CALC_ER_CONTRIB", "agent": "TRANSFORMATION", "enabled": false, "required": false},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#0900", "stepOrder": 900, "subroutineName": "BAD_SSN", "agent": "VALIDATOR", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1000", "stepOrder": 1000, "subroutineName": "FORMAT_DATES_STRINGS", "agent": "VALIDATOR", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1100", "stepOrder": 1100, "subroutineName": "EETYPE_CODING", "agent": "TRANSFORMATION", "enabled": false, "required": false},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1200", "stepOrder": 1200, "subroutineName": "EMPLOYMENT_STATUS", "agent": "VALIDATOR", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1300", "stepOrder": 1300, "subroutineName": "DUPLICATE_EMPLOYEES", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1400", "stepOrder": 1400, "subroutineName": "DROP_OLD_TERMS", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1500", "stepOrder": 1500, "subroutineName": "FIX_HOURS", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1600", "stepOrder": 1600, "subroutineName": "ISSUE_DETECTION", "agent": "VALIDATOR", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1700", "stepOrder": 1700, "subroutineName": "TOTALS_INCLNEG", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1800", "stepOrder": 1800, "subroutineName": "NEGATIVE_PAYROLL", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#1900", "stepOrder": 1900, "subroutineName": "TOTALS_EXCLNEG", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#2000", "stepOrder": 2000, "subroutineName": "PLAN_HOLD_CHECK", "agent": "COMPLIANCE", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#2100", "stepOrder": 2100, "subroutineName": "EXPORT_FILES", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#2200", "stepOrder": 2200, "subroutineName": "FORFEITURES", "agent": "COMPLIANCE", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#2300", "stepOrder": 2300, "subroutineName": "GENERATE_XML", "agent": "TRANSFORMATION", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#2400", "stepOrder": 2400, "subroutineName": "DEPWD_DETAIL_UPDATE", "agent": "COMPLIANCE", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#2500", "stepOrder": 2500, "subroutineName": "ACH_PREP", "agent": "COMPLIANCE", "enabled": true, "required": true},
+    {"PK": "CLIENT#DEFAULT_BiWeeklyFri", "SK": "STEP#2600", "stepOrder": 2600, "subroutineName": "ACH_CALC", "agent": "COMPLIANCE", "enabled": true, "required": true}
+  ]
+}

@@ -1,0 +1,48 @@
+# LiteLLM Configuration — Bedrock-only (SLM agents use in-process llama-cpp-python)
+
+model_list:
+  # --- Bedrock API Models (frontier reasoning) ---
+  - model_name: bedrock/claude-sonnet
+    litellm_params:
+      model: bedrock/us.anthropic.claude-sonnet-4-20250514-v1:0
+      aws_region_name: us-east-1
+
+  - model_name: bedrock/claude-haiku
+    litellm_params:
+      model: bedrock/anthropic.claude-3-5-haiku-20241022-v1:0
+      aws_region_name: us-east-1
+
+  # --- Agent-Specific Routes ---
+  - model_name: agent/orchestrator
+    litellm_params:
+      model: bedrock/claude-sonnet
+
+  - model_name: agent/compliance
+    litellm_params:
+      model: bedrock/claude-sonnet
+
+  - model_name: agent/idp-inference
+    litellm_params:
+      model: bedrock/claude-haiku  # Schema inference escalation (rare)
+
+router_settings:
+  routing_strategy: simple-shuffle
+  num_retries: 3
+  timeout: 60
+  fallbacks:
+    - bedrock/claude-sonnet: [bedrock/claude-haiku]
+
+general_settings:
+  master_key: sk-bluestar-litellm-key
+  enable_spend_tracking: true
+  max_budget: 300.00
+  budget_duration: 1mo
+
+litellm_settings:
+  guardrails:
+    - guardrail_name: bluestar-pii-filter
+      litellm_params:
+        guardrail: bedrock
+        guardrailIdentifier: "bsrs-pii-guardrail-v1"
+        guardrailVersion: "1"
+        mode: "during_call"

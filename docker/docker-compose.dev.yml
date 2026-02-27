@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack:3.6
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=dynamodb,s3,sqs,events
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - localstack_data:/var/lib/localstack
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  bluestar-api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    ports:
+      - "8080:8080"
+    environment:
+      - BLUESTAR_ENVIRONMENT=dev
+      - BLUESTAR_LLM_PROVIDER=mock
+      - BLUESTAR_DYNAMO_ENDPOINT_URL=http://localstack:4566
+      - BLUESTAR_DYNAMO_TABLE_SUFFIX=-dev
+      - BLUESTAR_REDIS_HOST=redis
+      - BLUESTAR_S3_ENDPOINT_URL=http://localstack:4566
+      - BLUESTAR_SQS_ENDPOINT_URL=http://localstack:4566
+    depends_on:
+      - localstack
+      - redis
+    volumes:
+      - ../src:/app/src
+      - ../tests:/app/tests
+
+volumes:
+  localstack_data:
