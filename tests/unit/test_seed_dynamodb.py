@@ -12,7 +12,7 @@ from moto import mock_aws
 # Make scripts/ importable
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "scripts"))
 
-from seed_dynamodb import create_tables, seed_pipeline_data, TABLE_DEFINITIONS  # noqa: E402
+from seed_dynamodb import create_tables, seed_pipeline_data  # noqa: E402
 
 
 @pytest.fixture

@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 from bluestar.persistence.dynamodb_backend import DynamoDBRulesStore
-from tests.integration.conftest import LOCALSTACK_URL, TABLE_SUFFIX, skip_no_localstack
+from tests.integration.conftest import LOCALSTACK_URL, skip_no_localstack
 
 
 @skip_no_localstack

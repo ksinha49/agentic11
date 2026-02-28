@@ -77,10 +77,26 @@ def seed_pipeline_data(ddb: Any, suffix: str = "") -> None:
     # -- Sample validation rules --
     tbl = ddb.Table(f"bluestar-validation-rules{suffix}")
     sample_rules = [
-        {"PK": "CATEGORY#SSN", "SK": "RULE#001", "field": "ssn", "pattern": r"^\d{9}$", "message": "SSN must be 9 digits"},
-        {"PK": "CATEGORY#SSN", "SK": "RULE#002", "field": "ssn", "check": "not_blank", "message": "SSN is required"},
-        {"PK": "CATEGORY#NAME", "SK": "RULE#001", "field": "last_name", "check": "not_blank", "message": "Last name is required"},
-        {"PK": "CATEGORY#COMP", "SK": "RULE#001", "field": "compensation", "check": "positive_number", "message": "Compensation must be positive"},
+        {
+            "PK": "CATEGORY#SSN", "SK": "RULE#001",
+            "field": "ssn", "pattern": r"^\d{9}$",
+            "message": "SSN must be 9 digits",
+        },
+        {
+            "PK": "CATEGORY#SSN", "SK": "RULE#002",
+            "field": "ssn", "check": "not_blank",
+            "message": "SSN is required",
+        },
+        {
+            "PK": "CATEGORY#NAME", "SK": "RULE#001",
+            "field": "last_name", "check": "not_blank",
+            "message": "Last name is required",
+        },
+        {
+            "PK": "CATEGORY#COMP", "SK": "RULE#001",
+            "field": "compensation", "check": "positive_number",
+            "message": "Compensation must be positive",
+        },
     ]
     with tbl.batch_writer() as batch:
         for rule in sample_rules:
@@ -90,9 +106,24 @@ def seed_pipeline_data(ddb: Any, suffix: str = "") -> None:
     # -- GLOBAL calculation rules --
     tbl = ddb.Table(f"bluestar-calculation-rules{suffix}")
     global_rules = [
-        {"PK": "CLIENT#GLOBAL", "SK": "CALC#match", "formula": "ee_deferral_pct * compensation", "max_pct": Decimal("6"), "description": "Default employer match"},
-        {"PK": "CLIENT#GLOBAL", "SK": "CALC#er_contrib", "formula": "compensation * er_pct", "max_pct": Decimal("3"), "description": "Default ER contribution"},
-        {"PK": "CLIENT#GLOBAL", "SK": "CALC#catch_up", "formula": "min(excess, irs_catch_up_limit)", "age_threshold": 50, "description": "Catch-up contribution calc"},
+        {
+            "PK": "CLIENT#GLOBAL", "SK": "CALC#match",
+            "formula": "ee_deferral_pct * compensation",
+            "max_pct": Decimal("6"),
+            "description": "Default employer match",
+        },
+        {
+            "PK": "CLIENT#GLOBAL", "SK": "CALC#er_contrib",
+            "formula": "compensation * er_pct",
+            "max_pct": Decimal("3"),
+            "description": "Default ER contribution",
+        },
+        {
+            "PK": "CLIENT#GLOBAL", "SK": "CALC#catch_up",
+            "formula": "min(excess, irs_catch_up_limit)",
+            "age_threshold": 50,
+            "description": "Catch-up contribution calc",
+        },
     ]
     with tbl.batch_writer() as batch:
         for rule in global_rules:
@@ -102,8 +133,16 @@ def seed_pipeline_data(ddb: Any, suffix: str = "") -> None:
     # -- IRS limits --
     tbl = ddb.Table(f"bluestar-irs-limits{suffix}")
     irs_data = [
-        {"PK": "YEAR#2024", "SK": "LIMITS", "max_401k": Decimal("23000"), "catch_up": Decimal("7500"), "comp_limit": Decimal("345000"), "annual_addition": Decimal("69000")},
-        {"PK": "YEAR#2025", "SK": "LIMITS", "max_401k": Decimal("23500"), "catch_up": Decimal("7500"), "comp_limit": Decimal("350000"), "annual_addition": Decimal("70000")},
+        {
+            "PK": "YEAR#2024", "SK": "LIMITS",
+            "max_401k": Decimal("23000"), "catch_up": Decimal("7500"),
+            "comp_limit": Decimal("345000"), "annual_addition": Decimal("69000"),
+        },
+        {
+            "PK": "YEAR#2025", "SK": "LIMITS",
+            "max_401k": Decimal("23500"), "catch_up": Decimal("7500"),
+            "comp_limit": Decimal("350000"), "annual_addition": Decimal("70000"),
+        },
     ]
     with tbl.batch_writer() as batch:
         for item in irs_data:

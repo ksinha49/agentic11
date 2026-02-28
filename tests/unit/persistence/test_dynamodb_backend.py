@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from decimal import Decimal
 from typing import Any
 
@@ -78,8 +77,16 @@ def cached_store(aws):
 class TestGetPipelineSteps:
     def test_returns_sorted_steps(self, store, aws):
         tbl = aws.Table(f"bluestar-processing-pipeline{TABLE_SUFFIX}")
-        _put(tbl, {"PK": "CLIENT#ACME_BiWeeklyFri", "SK": "STEP#0200", "stepOrder": 200, "subroutineName": "FILE_VALIDATION", "agent": "VALIDATOR", "enabled": True, "required": True})
-        _put(tbl, {"PK": "CLIENT#ACME_BiWeeklyFri", "SK": "STEP#0100", "stepOrder": 100, "subroutineName": "FILE_INGEST", "agent": "IDP", "enabled": True, "required": True})
+        _put(tbl, {
+            "PK": "CLIENT#ACME_BiWeeklyFri", "SK": "STEP#0200",
+            "stepOrder": 200, "subroutineName": "FILE_VALIDATION",
+            "agent": "VALIDATOR", "enabled": True, "required": True,
+        })
+        _put(tbl, {
+            "PK": "CLIENT#ACME_BiWeeklyFri", "SK": "STEP#0100",
+            "stepOrder": 100, "subroutineName": "FILE_INGEST",
+            "agent": "IDP", "enabled": True, "required": True,
+        })
 
         steps = store.get_pipeline_steps("ACME", "BiWeeklyFri")
         assert len(steps) == 2
