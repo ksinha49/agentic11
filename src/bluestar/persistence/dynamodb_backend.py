@@ -7,8 +7,9 @@ from decimal import Decimal
 from typing import Any
 
 import boto3
+from botocore.exceptions import ClientError
 
-from bluestar.core.exceptions import RuleNotFoundError
+from bluestar.core.exceptions import BlueStarError, RuleNotFoundError
 
 
 class _DecimalEncoder(json.JSONEncoder):
@@ -20,23 +21,15 @@ class _DecimalEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-def _decode_decimals(item: dict[str, Any]) -> dict[str, Any]:
-    """Convert Decimal values in a DynamoDB item to int/float."""
-    out: dict[str, Any] = {}
-    for k, v in item.items():
-        if isinstance(v, Decimal):
-            out[k] = int(v) if v == int(v) else float(v)
-        elif isinstance(v, dict):
-            out[k] = _decode_decimals(v)
-        elif isinstance(v, list):
-            out[k] = [
-                _decode_decimals(i) if isinstance(i, dict)
-                else (int(i) if isinstance(i, Decimal) and i == int(i) else float(i) if isinstance(i, Decimal) else i)
-                for i in v
-            ]
-        else:
-            out[k] = v
-    return out
+def _decode_decimals(obj: Any) -> Any:
+    """Recursively convert Decimal values to int/float."""
+    if isinstance(obj, Decimal):
+        return int(obj) if obj == int(obj) else float(obj)
+    if isinstance(obj, dict):
+        return {k: _decode_decimals(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_decode_decimals(i) for i in obj]
+    return obj
 
 
 class DynamoDBRulesStore:
@@ -59,20 +52,40 @@ class DynamoDBRulesStore:
         return self._ddb.Table(f"{base}{self._table_suffix}")
 
     def _query_pk(self, table_base: str, pk: str) -> list[dict[str, Any]]:
-        """Query all items with a given partition key."""
-        tbl = self._table(table_base)
-        resp = tbl.query(
-            KeyConditionExpression="PK = :pk",
-            ExpressionAttributeValues={":pk": pk},
-        )
-        return [_decode_decimals(item) for item in resp.get("Items", [])]
+        """Query all items with a given partition key (paginated)."""
+        try:
+            tbl = self._table(table_base)
+            items: list[dict[str, Any]] = []
+            kwargs: dict[str, Any] = {
+                "KeyConditionExpression": "PK = :pk",
+                "ExpressionAttributeValues": {":pk": pk},
+            }
+            while True:
+                resp = tbl.query(**kwargs)
+                items.extend(
+                    _decode_decimals(item) for item in resp.get("Items", [])
+                )
+                if "LastEvaluatedKey" not in resp:
+                    break
+                kwargs["ExclusiveStartKey"] = resp["LastEvaluatedKey"]
+            return items
+        except ClientError as exc:
+            raise BlueStarError(
+                f"DynamoDB query failed for {table_base}, PK={pk!r}: {exc}"
+            ) from exc
 
     def _get_item(self, table_base: str, pk: str, sk: str) -> dict[str, Any] | None:
         """Get a single item by PK + SK. Returns None if not found."""
-        tbl = self._table(table_base)
-        resp = tbl.get_item(Key={"PK": pk, "SK": sk})
-        item = resp.get("Item")
-        return _decode_decimals(item) if item else None
+        try:
+            tbl = self._table(table_base)
+            resp = tbl.get_item(Key={"PK": pk, "SK": sk})
+            item = resp.get("Item")
+            return _decode_decimals(item) if item else None
+        except ClientError as exc:
+            raise BlueStarError(
+                f"DynamoDB get_item failed for {table_base}, "
+                f"PK={pk!r}, SK={sk!r}: {exc}"
+            ) from exc
 
     # ---- IRulesStore methods ----
 

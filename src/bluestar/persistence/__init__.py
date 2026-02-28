@@ -8,7 +8,9 @@ from bluestar.persistence.redis_backend import RedisCacheBackend
 from bluestar.persistence.s3_backend import S3FileStore
 
 
-def create_persistence(settings: AppSettings | None = None):
+def create_persistence(
+    settings: AppSettings | None = None,
+) -> tuple[DynamoDBRulesStore, RedisCacheBackend, S3FileStore]:
     """Create wired-up persistence backends from application settings.
 
     Returns:

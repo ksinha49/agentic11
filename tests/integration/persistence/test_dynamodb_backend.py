@@ -20,7 +20,7 @@ class TestDynamoDBIntegration:
 
     def test_pipeline_steps_from_seed(self, store):
         steps = store.get_pipeline_steps("DEFAULT", "BiWeeklyFri")
-        assert len(steps) == 26
+        assert len(steps) == 27
         assert steps[0]["subroutineName"] == "FILE_INGEST"
 
     def test_global_calc_rule_exists(self, store):
