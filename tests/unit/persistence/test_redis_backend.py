@@ -19,7 +19,7 @@ def fake_server():
 
 @pytest.fixture
 def backend(fake_server):
-    with patch("redis.Redis", return_value=fakeredis.FakeRedis(server=fake_server)):
+    with patch("redis.Redis", return_value=fakeredis.FakeRedis(server=fake_server, decode_responses=True)):
         return RedisCacheBackend(host="localhost", port=6379, db=0)
 
 
