@@ -7,7 +7,7 @@ name = "bluestar"
 version = "0.1.0"
 description = "BlueStar Retirement Services AI-Powered Payroll Processing Platform"
 requires-python = ">=3.12"
-license = "Proprietary"
+license = {text = "Proprietary"}
 dependencies = [
     "pydantic>=2.7",
     "pydantic-settings>=2.3",
