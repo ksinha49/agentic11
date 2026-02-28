@@ -47,6 +47,7 @@ dev = [
     "boto3-stubs[dynamodb,s3,sqs,events]>=1.35",
     "respx>=0.21",
     "moto[dynamodb,s3,sqs]>=5.0",
+    "fakeredis>=2.26",
 ]
 
 [tool.hatch.build.targets.wheel]
